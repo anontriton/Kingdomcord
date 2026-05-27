@@ -1,0 +1,24 @@
+{
+  "name": "kingdomcord",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w packages/bot",
+    "build": "npm run build -w packages/shared && npm run build -w packages/db && npm run build -w packages/bot",
+    "start": "npm run start -w packages/bot",
+    "db:migrate": "npm run migrate -w packages/db",
+    "db:migrate:dev": "npm run migrate:dev -w packages/db",
+    "db:generate": "npm run generate -w packages/db",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Guild {
+  id              String   @id @default(cuid())
+  guildId         String   @unique
+  name            String
+  config          Json     @default("{}")
+  currentSeasonId String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  currentSeason      Season?             @relation("CurrentSeason", fields: [currentSeasonId], references: [id])
+  seasons            Season[]            @relation("GuildSeasons")
+  users              User[]
+  rewards            Reward[]
+  dailyPosts         DailyPost[]
+  bibleStudySessions BibleStudySession[]
+}
+
+model User {
+  id             String    @id @default(cuid())
+  userId         String
+  guildId        String
+  username       String
+  kingdomPoints  Int       @default(0)
+  lifetimePoints Int       @default(0)
+  streakDays     Int       @default(0)
+  lastActive     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  guild         Guild          @relation(fields: [guildId], references: [guildId])
+  seasonRecords SeasonRecord[]
+  userRewards   UserReward[]
+  pointsLedger  PointsLedger[]
+
+  @@unique([userId, guildId])
+}
+
+model Season {
+  id        String   @id @default(cuid())
+  guildId   String
+  name      String
+  startDate DateTime
+  endDate   DateTime
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  guild            Guild          @relation("GuildSeasons", fields: [guildId], references: [guildId])
+  currentForGuilds Guild[]        @relation("CurrentSeason")
+  seasonRecords    SeasonRecord[]
+  userRewards      UserReward[]
+}
+
+model SeasonRecord {
+  id          String @id @default(cuid())
+  userId      String
+  guildId     String
+  seasonId    String
+  finalPoints Int
+  finalRank   Int
+
+  user   User   @relation(fields: [userId, guildId], references: [userId, guildId])
+  season Season @relation(fields: [seasonId], references: [id])
+
+  @@unique([userId, guildId, seasonId])
+}
+
+model Reward {
+  id          String     @id @default(cuid())
+  guildId     String
+  type        RewardType
+  name        String
+  description String
+  costKp      Int
+  isSeasonal  Boolean    @default(false)
+  isLegacy    Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+
+  guild       Guild        @relation(fields: [guildId], references: [guildId])
+  userRewards UserReward[]
+}
+
+enum RewardType {
+  TITLE
+  BADGE
+  EMOJI
+  BOOST
+  ROLE
+}
+
+model UserReward {
+  id         String   @id @default(cuid())
+  userId     String
+  guildId    String
+  rewardId   String
+  acquiredAt DateTime @default(now())
+  seasonId   String?
+  isEquipped Boolean  @default(false)
+
+  user   User    @relation(fields: [userId, guildId], references: [userId, guildId])
+  reward Reward  @relation(fields: [rewardId], references: [id])
+  season Season? @relation(fields: [seasonId], references: [id])
+}
+
+model PointsLedger {
+  id        String   @id @default(cuid())
+  userId    String
+  guildId   String
+  delta     Int
+  reason    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId, guildId], references: [userId, guildId])
+}
+
+model DailyPost {
+  id              String   @id @default(cuid())
+  guildId         String
+  postedAt        DateTime @default(now())
+  verseReference  String
+  verseText       String
+  prompts         Json     @default("[]")
+  engagementCount Int      @default(0)
+
+  guild Guild @relation(fields: [guildId], references: [guildId])
+}
+
+model BibleStudySession {
+  id           String    @id @default(cuid())
+  guildId      String
+  channelId    String
+  startedAt    DateTime  @default(now())
+  endedAt      DateTime?
+  transcript   String?
+  summary      String?
+  participants Json      @default("[]")
+
+  guild Guild @relation(fields: [guildId], references: [guildId])
+}

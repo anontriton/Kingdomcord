@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "composite": true,
+    "paths": {
+      "@kingdomcord/db": ["../db/src/index.ts"],
+      "@kingdomcord/shared": ["../shared/src/index.ts"]
+    }
+  },
+  "references": [
+    { "path": "../db" },
+    { "path": "../shared" }
+  ],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
