@@ -30,9 +30,9 @@ Repeat for any other channels you want to configure:
 | Type | Purpose |
 |---|---|
 | **Daily Word** | Where the bot posts the daily Bible verse each morning |
-| **Leaderboard** | *(future)* Pinned leaderboard display |
-| **Kingdom Store** | *(future)* Where members browse and spend KP |
-| **Bible Study Notes** | *(future)* Where Apollo posts session summaries |
+| **Leaderboard** | *(Phase 2)* Pinned leaderboard display |
+| **Kingdom Store** | *(Phase 2)* Where members browse and spend KP |
+| **Bible Study Notes** | *(Phase 4)* Where Apollo posts session summaries |
 
 ### 3. That's it
 The bot will automatically post a verse to your `#daily-word` channel every day at **8:00 AM**.
@@ -53,6 +53,8 @@ The bot will automatically post a verse to your `#daily-word` channel every day 
 | Command | Description |
 |---|---|
 | `/admin channel set [type] [channel]` | Assigns a Discord channel to a Kingdomcord feature |
+| `/admin config kp [action] [amount]` | Sets how many KP a specific action awards in this server |
+| `/admin post-now` | Immediately posts today's daily verse (useful for testing) |
 
 ---
 
@@ -60,20 +62,36 @@ The bot will automatically post a verse to your `#daily-word` channel every day 
 
 Members earn **Kingdom Points** by engaging with daily content. Points are tracked per server and reset each season.
 
-| Action | KP Earned |
-|---|---|
-| React to the daily verse | **+5 KP** |
-| *(more ways to earn coming in Phase 2)* | |
+| Action | Default KP | Configurable? |
+|---|---|---|
+| React to the daily verse | **5 KP** | ✅ |
+| Correct trivia answer *(Phase 2)* | **10 KP** | ✅ |
+| Reflection response *(Phase 2)* | **8 KP** | ✅ |
+| Streak bonus multiplier *(Phase 2)* | **1.5×** | ✅ |
 
 Use `/leaderboard` to see where you rank in your server.
+
+---
+
+## Server Configuration
+
+Every server gets its own isolated configuration. Admins can customise KP amounts to fit their community:
+
+```
+/admin config kp  action: Daily verse reaction  amount: 10
+/admin config kp  action: Correct trivia answer  amount: 15
+/admin config kp  action: Streak bonus multiplier  amount: 2
+```
+
+All settings are stored per-server — changes in one server never affect another.
 
 ---
 
 ## Daily Verse
 
 - A new verse is posted every day at **8:00 AM** to the configured `#daily-word` channel
-- Verses are drawn from a curated rotation of 30 well-known passages
-- Members earn **5 KP** for reacting to each post — one award per post, per member
+- Verses are drawn from a curated rotation of 30 well-known passages (NIV by default)
+- Members earn KP for reacting to each post — one award per post, per member
 
 ---
 
@@ -81,7 +99,7 @@ Use `/leaderboard` to see where you rank in your server.
 
 | Phase | Features |
 |---|---|
-| **Phase 1** ✅ | Daily verse, Kingdom Points, leaderboard, channel config |
+| **Phase 1** ✅ | Daily verse, Kingdom Points, leaderboard, channel & KP config |
 | **Phase 2** | Trivia & reflection prompts, streak bonuses, rewards store, season system |
 | **Phase 3** | Pastor Apollo text commands (`/reference`, `/explain`, `/pray`, etc.) |
 | **Phase 4** | Apollo voice — joins calls, transcribes, posts Bible study summaries |

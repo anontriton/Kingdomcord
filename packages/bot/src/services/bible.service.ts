@@ -1,5 +1,5 @@
-// Default Bible ID: KJV on api.bible. Find others at https://scripture.api.bible/lifechange/bibles
-const DEFAULT_BIBLE_ID = 'de4e12af7f28f599-02';
+// Default Bible ID: NIV 2011 on api.bible. Find others at https://rest.api.bible/v1/bibles
+const DEFAULT_BIBLE_ID = '78a9f6124f344018-01';
 
 // 30-verse rotation — one per day of month, cycling
 const DAILY_VERSE_IDS = [
@@ -38,7 +38,7 @@ export const BibleService = {
       'include-verse-numbers': 'false',
     });
 
-    const url = `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?${params}`;
+    const url = `https://rest.api.bible/v1/bibles/${bibleId}/verses/${verseId}?${params}`;
     const res = await fetch(url, { headers: { 'api-key': apiKey } });
 
     if (!res.ok) {

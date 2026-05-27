@@ -17,7 +17,12 @@ export function startDailyVerseJob(client: Client): void {
 
 export async function postDailyVerseToAllGuilds(client: Client): Promise<void> {
   const guilds = await prisma.guild.findMany();
-  await Promise.allSettled(guilds.map((g) => postDailyVerse(client, g.guildId)));
+  const results = await Promise.allSettled(guilds.map((g) => postDailyVerse(client, g.guildId)));
+  results.forEach((result, i) => {
+    if (result.status === 'rejected') {
+      logger.error({ guildId: guilds[i]?.guildId, err: result.reason }, 'Failed to post daily verse to guild');
+    }
+  });
 }
 
 async function postDailyVerse(client: Client, guildId: string): Promise<void> {

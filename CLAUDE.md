@@ -143,6 +143,20 @@ Prisma schema at `packages/db/prisma/schema.prisma`. Key models:
 
 ---
 
+## Guild Configuration
+
+All per-server settings live in `Guild.config` (typed as `GuildConfig` from `@kingdomcord/shared`). Key sections:
+
+- `config.channels` — Discord channel IDs for each feature (dailyWord, store, leaderboard, bibleStudyNotes)
+- `config.kp` — KP earn amounts per action (reactionAmount, triviaAmount, reflectionAmount, streakBonusMultiplier)
+- `config.bibleId` — Scripture API Bible ID (defaults to NIV `78a9f6124f344018-01`)
+- `config.timezone` — Server timezone for scheduled jobs
+- `config.season` — Season length in days
+
+Use `GuildService.getConfig(guildId)` to read config (deep-merges stored values with `DEFAULT_CONFIG` so all keys always have values). Use `GuildService.setChannel()` and `GuildService.setKp()` to write individual fields. Never write `config` directly — always go through these methods.
+
+---
+
 ## Critical Rules
 
 - **Never push directly to `main`** — all changes via PRs
