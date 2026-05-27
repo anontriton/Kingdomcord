@@ -2,6 +2,7 @@ export type Snowflake = string;
 
 export interface GuildConfig {
   timezone: string;
+  bibleId?: string;
   channels: {
     dailyWord?: Snowflake;
     store?: Snowflake;

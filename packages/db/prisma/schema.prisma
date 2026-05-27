@@ -36,10 +36,11 @@ model User {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
-  guild         Guild          @relation(fields: [guildId], references: [guildId])
-  seasonRecords SeasonRecord[]
-  userRewards   UserReward[]
-  pointsLedger  PointsLedger[]
+  guild               Guild               @relation(fields: [guildId], references: [guildId])
+  seasonRecords       SeasonRecord[]
+  userRewards         UserReward[]
+  pointsLedger        PointsLedger[]
+  dailyPostReactions  DailyPostReaction[]
 
   @@unique([userId, guildId])
 }
@@ -124,13 +125,28 @@ model PointsLedger {
 model DailyPost {
   id              String   @id @default(cuid())
   guildId         String
+  messageId       String?  @unique
   postedAt        DateTime @default(now())
   verseReference  String
   verseText       String
   prompts         Json     @default("[]")
   engagementCount Int      @default(0)
 
-  guild Guild @relation(fields: [guildId], references: [guildId])
+  guild     Guild               @relation(fields: [guildId], references: [guildId])
+  reactions DailyPostReaction[]
+}
+
+model DailyPostReaction {
+  id          String   @id @default(cuid())
+  dailyPostId String
+  userId      String
+  guildId     String
+  reactedAt   DateTime @default(now())
+
+  dailyPost DailyPost @relation(fields: [dailyPostId], references: [id])
+  user      User      @relation(fields: [userId, guildId], references: [userId, guildId])
+
+  @@unique([dailyPostId, userId])
 }
 
 model BibleStudySession {
